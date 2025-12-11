@@ -143,3 +143,48 @@ textarea#input:focus {
   border-radius: 6px;
   border-left: 4px solid light-dark(#d61c1c, #ff6666);
 }
+
+#share-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  margin-top: 20px;
+}
+
+#share-container[hidden] {
+  display: none;
+}
+
+#share-btn {
+  padding: 10px 16px;
+  background-color: light-dark(#1c7ed6, #66b2ff);
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+}
+
+#share-btn:hover {
+  background-color: light-dark(#1971c2, #5cc6e8);
+}
+
+#share-btn:active {
+  transform: scale(0.98);
+}
+
+#share-btn:disabled {
+  background-color: light-dark(#adb5bd, #495057);
+  cursor: not-allowed;
+}
+
+#share-status {
+  font-size: 13px;
+  color: light-dark(#51a550, #86e68d);
+  font-weight: bold;
+  min-height: 20px;
+}

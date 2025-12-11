@@ -3,6 +3,6 @@
 
 window.process = {
   env: {
-    API_KEY: "AIzaSyB82ZAEhJOWdY7gAPFKe-yMFXIPC39GQvE", // <-- PASTE YOUR GEMINI API KEY HERE
+    API_KEY: "", // <-- PASTE YOUR GEMINI API KEY HERE
   }
 };

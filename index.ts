@@ -10,6 +10,8 @@ import {marked} from 'marked';
 const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_API_KEY as string });
 
 const userInput = document.querySelector('#input') as HTMLTextAreaElement;
+const submitBtn = document.querySelector('#submit-btn') as HTMLButtonElement;
+const loadingEl = document.querySelector('#loading') as HTMLDivElement;
 const modelOutput = document.querySelector('#output') as HTMLDivElement;
 const slideshow = document.querySelector('#slideshow') as HTMLDivElement;
 const error = document.querySelector('#error') as HTMLDivElement;
@@ -113,12 +115,14 @@ function parseError(error: string) {
 
 async function generate(message: string) {
   userInput.disabled = true;
+  submitBtn.disabled = true;
+  loadingEl.removeAttribute('hidden');
   currentQuestion = message;
   currentResponse = '';
 
   modelOutput.innerHTML = '';
   slideshow.innerHTML = '';
-  error.innerHTML = '';
+  error.textContent = '';
   error.toggleAttribute('hidden', true);
   shareContainer.toggleAttribute('hidden', true);
 
@@ -130,7 +134,7 @@ async function generate(message: string) {
     userInput.value = '';
 
     const result = await ai.models.generateContentStream({
-      model: 'gemini-2.5-flash-image-preview',
+      model: 'gemini-2.0-flash-preview-image-generation',
       contents: message + additionalInstructions,
       config: {
         responseModalities: [Modality.TEXT, Modality.IMAGE],
@@ -186,11 +190,13 @@ async function generate(message: string) {
   } catch (e: unknown) {
     const errorString = e instanceof Error ? e.toString() : String(e);
     const msg = parseError(errorString);
-    error.innerHTML = `Something went wrong: ${msg}`;
+    error.textContent = `Something went wrong: ${msg}`;
     error.removeAttribute('hidden');
     shareContainer.toggleAttribute('hidden', true);
   }
+  loadingEl.toggleAttribute('hidden', true);
   userInput.disabled = false;
+  submitBtn.disabled = false;
   userInput.focus();
 }
 
@@ -214,6 +220,14 @@ examples.forEach((li) =>
     }
   }),
 );
+
+// Submit button event listener
+submitBtn.addEventListener('click', async () => {
+  const message = userInput.value;
+  if (message) {
+    await generate(message);
+  }
+});
 
 // Share button event listener
 if (shareBtn) {

@@ -39,7 +39,6 @@ function copyToClipboard(text: string): Promise<void> {
   if (navigator.clipboard && window.isSecureContext) {
     return navigator.clipboard.writeText(text);
   } else {
-    // Fallback for non-secure contexts
     return new Promise((resolve, reject) => {
       const textarea = document.createElement('textarea');
       textarea.value = text;
@@ -63,7 +62,6 @@ async function handleShare() {
   shareStatus.textContent = 'Copying...';
 
   try {
-    // Try Web Share API first (for mobile)
     if (navigator.share) {
       await navigator.share({
         title: 'Explain with Tiny Dogs',
@@ -154,16 +152,10 @@ async function generate(message: string) {
               text += part.text;
               responseText += part.text;
             } else {
-              try {
-                const data = part.inlineData;
-                if (data) {
-                  img = document.createElement('img');
-                  img.src = `data:image/png;base64,` + data.data;
-                } else {
-                  console.log('no data', chunk);
-                }
-              } catch (e) {
-                console.log('no data', chunk);
+              const data = part.inlineData;
+              if (data) {
+                img = document.createElement('img');
+                img.src = `data:image/png;base64,` + data.data;
               }
             }
             if (text && img) {
@@ -186,7 +178,6 @@ async function generate(message: string) {
     if (currentResponse.length > 0) {
       shareContainer.removeAttribute('hidden');
     }
-  } // <-- Close the for await...of loop
   } catch (e: unknown) {
     const errorString = e instanceof Error ? e.toString() : String(e);
     const msg = parseError(errorString);
@@ -200,8 +191,6 @@ async function generate(message: string) {
   userInput.focus();
 }
 
-// FIX: Removed API key check to comply with coding guidelines.
-// The application should assume the API key is correctly configured in the environment.
 userInput.addEventListener('keydown', async (e: KeyboardEvent) => {
   if (e.code === 'Enter') {
     e.preventDefault();
@@ -221,7 +210,6 @@ examples.forEach((li) =>
   }),
 );
 
-// Submit button event listener
 submitBtn.addEventListener('click', async () => {
   const message = userInput.value;
   if (message) {
@@ -229,12 +217,10 @@ submitBtn.addEventListener('click', async () => {
   }
 });
 
-// Share button event listener
 if (shareBtn) {
   shareBtn.addEventListener('click', handleShare);
 }
 
-// Load from URL parameters if present
 window.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
   const question = params.get('q');
